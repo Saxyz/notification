@@ -23,10 +23,14 @@ public class Notification {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(name="to_email")
-    private String toEmail;
-    @Column(name="from_email")
-    private String fromEmail;
+    @Column(name = "project_id")
+    private Long projectId;
+    @Column(name = "project_name")
+    private String projectName;
+    @Column(name="send_to")
+    private String sendTo;
+    @Column(name="send_from")
+    private String sendFrom;
     private String subject;
     private String body;
     private NotificationChannelEnum channel;

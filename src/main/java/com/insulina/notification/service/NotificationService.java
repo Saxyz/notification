@@ -1,6 +1,7 @@
 package com.insulina.notification.service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
@@ -28,28 +29,47 @@ public class NotificationService {
         String toEmail = (String) event.get("toEmail");
         String subject = (String) event.get("subject");
         String body = (String) event.get("body");
+        Long projectId = (Long) event.get("projectId");
+        String projectName = (String) event.get("projectName");
         String fromEmail = System.getenv("SPRING_MAIL_USERNAME");
 
-        Notification notification = createNotification(toEmail, subject, body, fromEmail);
-
-        notificationRepository.save(notification);
+        Notification notification = createNotification(toEmail, subject, body, fromEmail, projectId, projectName);
 
         try {
             emailSender.send(toEmail, subject, body);
+            notificationRepository.save(notification);
         } catch (Exception e) {
             LOGGER.severe("Error al enviar notificación: " + e.getMessage());
         }
     }
 
-    private Notification createNotification(String toEmail, String subject, String body, String fromEmail) {
+    private Notification createNotification(String toEmail, String subject, String body, String fromEmail, Long projectId, String projectName) {
         return new Notification().builder()
-        .toEmail(toEmail)
-        .fromEmail(fromEmail)
+        .projectId(projectId)
+        .projectName(projectName)
+        .sendTo(toEmail)
+        .sendFrom(fromEmail)
         .subject(subject)
         .body(body)
         .channel(NotificationChannelEnum.EMAIL)
         .sendAt(LocalDateTime.now())
         .build();
+    }
+
+    public List<Notification> getAllLogs(){
+        return notificationRepository.findAll();
+    }
+
+    public List<Notification> getLogsByProjectName(String projectName){
+        return notificationRepository.findByProjectName(projectName);
+    }
+
+    public List<Notification> getLogsBySendTo(String sendTo){
+        return notificationRepository.findBySendTo(sendTo);
+    }
+
+    public List<Notification> getLogsByProjectNameAndSendTo(String projectName, String sendTo){
+        return notificationRepository.findByProjectNameAndSendTo(projectName, sendTo);
     }
     
 }

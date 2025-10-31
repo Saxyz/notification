@@ -28,7 +28,7 @@ public class EmailSender {
             mailSender.send(message);
             System.out.printf("Email enviado a %s con asunto '%s'%n", toEmail, subject);
         } catch (Exception e) {
-            System.err.printf("Error enviando correo a %s: %s%n", toEmail, e.getMessage());
+            System.err.printf("Error al intentar enviar correo a %s: %s%n", toEmail, e.getMessage());
             throw e;
         }
     }
