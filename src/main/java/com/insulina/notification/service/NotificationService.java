@@ -13,7 +13,6 @@ import com.insulina.notification.model.Notification;
 import com.insulina.notification.repository.NotificationRepository;
 
 import lombok.RequiredArgsConstructor;
-import lombok.Value;
 
 @Service
 @RequiredArgsConstructor
