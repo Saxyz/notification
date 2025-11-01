@@ -23,18 +23,18 @@ public class NotificationController {
     private final NotificationService service;
 
     @GetMapping
-    public List<Notification> getLogsByFilters(
+    public List<Notification> getNotificationsLogsByFilters(
             @RequestParam(required = false) String projectName,
             @RequestParam(required = false) String sendTo) {
 
         if (projectName != null && sendTo != null) {
-            return service.getLogsByProjectNameAndSendTo(projectName, sendTo);
+            return service.getNotificationsLogsByProjectNameAndSendTo(projectName, sendTo);
         } else if (projectName != null) {
-            return service.getLogsByProjectName(projectName);
+            return service.getNotificationsLogsByProjectName(projectName);
         } else if (sendTo != null) {
-            return service.getLogsBySendTo(sendTo);
+            return service.getNotificationsLogsBySendTo(sendTo);
         } else {
-            return service.getAllLogs(); // o lanzar una excepción
+            return service.getAllNotificationsLogs(); // o lanzar una excepción
         }
     }
 }

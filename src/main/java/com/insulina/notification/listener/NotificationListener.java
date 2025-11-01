@@ -5,7 +5,7 @@ import java.util.Map;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.stereotype.Component;
 
-import com.insulina.notification.Events.ProjectEvent;
+import com.insulina.notification.events.ProjectEvent;
 import com.insulina.notification.service.NotificationService;
 
 @Component

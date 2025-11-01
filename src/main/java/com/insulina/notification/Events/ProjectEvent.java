@@ -1,4 +1,4 @@
-package com.insulina.notification.Events;
+package com.insulina.notification.events;
 
 import java.util.List;
 

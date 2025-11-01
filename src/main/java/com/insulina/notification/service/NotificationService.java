@@ -6,10 +6,10 @@ import java.util.logging.Logger;
 
 import org.springframework.stereotype.Service;
 
-import com.insulina.notification.Events.ProjectEvent;
 import com.insulina.notification.email.EmailSender;
 import com.insulina.notification.enums.NotificationChannelEnum;
 import com.insulina.notification.enums.NotificationStatusEnum;
+import com.insulina.notification.events.ProjectEvent;
 import com.insulina.notification.model.Notification;
 import com.insulina.notification.repository.NotificationRepository;
 
@@ -76,19 +76,19 @@ public class NotificationService {
                 .build();
     }
 
-    public List<Notification> getAllLogs() {
+    public List<Notification> getAllNotificationsLogs() {
         return notificationRepository.findAll();
     }
 
-    public List<Notification> getLogsByProjectName(String projectName) {
+    public List<Notification> getNotificationsLogsByProjectName(String projectName) {
         return notificationRepository.findByProjectName(projectName);
     }
 
-    public List<Notification> getLogsBySendTo(String sendTo) {
+    public List<Notification> getNotificationsLogsBySendTo(String sendTo) {
         return notificationRepository.findBySendTo(sendTo);
     }
 
-    public List<Notification> getLogsByProjectNameAndSendTo(String projectName, String sendTo) {
+    public List<Notification> getNotificationsLogsByProjectNameAndSendTo(String projectName, String sendTo) {
         return notificationRepository.findByProjectNameAndSendTo(projectName, sendTo);
     }
 
