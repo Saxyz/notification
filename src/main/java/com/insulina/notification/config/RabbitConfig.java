@@ -1,6 +1,7 @@
 package com.insulina.notification.config;
 
 import org.springframework.amqp.core.*;
+import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -23,5 +24,10 @@ public class RabbitConfig {
     @Bean
     public Binding bindEmailQueue(Queue emailQueue, TopicExchange projectsExchange) {
         return BindingBuilder.bind(emailQueue).to(projectsExchange).with(ROUTING_PATTERN);
+    }
+
+    @Bean
+    public Jackson2JsonMessageConverter jsonMessageConverter() {
+        return new Jackson2JsonMessageConverter();
     }
 }

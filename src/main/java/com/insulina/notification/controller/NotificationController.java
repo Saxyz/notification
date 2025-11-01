@@ -2,6 +2,7 @@ package com.insulina.notification.controller;
 
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,7 +19,8 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class NotificationController {
 
-    private NotificationService service;
+    @Autowired
+    private final NotificationService service;
 
     @GetMapping
     public List<Notification> getLogsByFilters(

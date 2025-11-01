@@ -1,4 +1,4 @@
-package com.insulina.notification.Events;
+package com.insulina.notification.enums;
 
 public enum EventType {
     PROJECT_CREATED("Proyecto Creado", "Ha sido creado"),

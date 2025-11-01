@@ -2,6 +2,8 @@ package com.insulina.notification.Events;
 
 import java.util.List;
 
+import com.insulina.notification.enums.EventType;
+
 import lombok.Data;
 
 @Data
