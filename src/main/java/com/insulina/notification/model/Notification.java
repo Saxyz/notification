@@ -3,6 +3,7 @@ package com.insulina.notification.model;
 import java.time.LocalDateTime;
 
 import com.insulina.notification.enums.NotificationChannelEnum;
+import com.insulina.notification.enums.NotificationStatusEnum;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -36,4 +37,6 @@ public class Notification {
     private NotificationChannelEnum channel;
     @Column(name = "send_at")
     private LocalDateTime sendAt;
+    private NotificationStatusEnum status;
+    private String errorMessage;
 }
