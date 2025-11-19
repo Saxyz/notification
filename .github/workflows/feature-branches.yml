@@ -36,6 +36,15 @@ jobs:
     
     - name: Maven Clean Install
       run: mvn clean install -DskipTests=false
+
+    - name: Compile code
+      run: mvn clean compile
+    
+    - name: Run tests
+      run: mvn test
+    
+    - name: Package application
+      run: mvn package -DskipTests=true
     
     - name: Publish Test Results
       uses: dorny/test-reporter@v1
