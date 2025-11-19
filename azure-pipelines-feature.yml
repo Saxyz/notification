@@ -1,0 +1,72 @@
+trigger:
+  branches:
+    include:
+    - feature-*
+
+pool:
+  vmImage: ubuntu-latest
+
+
+
+steps:
+- task: JavaToolInstaller@0
+  displayName: 'Install Java 21'
+  inputs:
+    versionSpec: '21'
+    jdkArchitectureOption: 'x64'
+    jdkSourceOption: 'PreInstalled'
+
+- task: Maven@4
+  displayName: 'Maven Clean Install'
+  inputs:
+    mavenPomFile: 'pom.xml'
+    goals: 'clean install'
+    options: '-DskipTests=false'
+    publishJUnitResults: true
+    testResultsFiles: '**/surefire-reports/TEST-*.xml'
+    javaHomeOption: 'JDKVersion'
+    jdkVersionOption: '1.21'
+    mavenVersionOption: 'Default'
+    mavenAuthenticateFeed: false
+    effectivePomSkip: false
+    sonarQubeRunAnalysis: false
+
+- task: PublishTestResults@2
+  displayName: 'Publish Test Results'
+  condition: succeededOrFailed()
+  inputs:
+    testResultsFormat: 'JUnit'
+    testResultsFiles: '**/surefire-reports/TEST-*.xml'
+    failTaskOnFailedTests: true
+    testRunTitle: 'Unit Tests'
+
+- task: PublishPipelineArtifact@1
+  displayName: 'Publish Surefire Reports'
+  condition: always()
+  inputs:
+    targetPath: 'target/surefire-reports'
+    artifact: 'surefire-reports'
+    publishLocation: 'pipeline'
+
+- task: PublishPipelineArtifact@1
+  displayName: 'Publish Dump Files'
+  condition: always()
+  inputs:
+    targetPath: 'target'
+    artifact: 'dump-files'
+    publishLocation: 'pipeline'
+
+- task: PublishBuildArtifacts@1
+  displayName: 'Publish JAR artifact'
+  condition: succeeded()
+  inputs:
+    pathToPublish: '$(Build.ArtifactStagingDirectory)'
+    artifactName: 'application-jar'
+    publishLocation: 'Container'
+
+- task: PublishBuildArtifacts@1
+  displayName: 'Publish Test Reports'
+  condition: always()
+  inputs:
+    pathToPublish: 'target/surefire-reports'
+    artifactName: 'test-reports'

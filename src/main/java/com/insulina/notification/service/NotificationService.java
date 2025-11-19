@@ -1,34 +1,95 @@
 package com.insulina.notification.service;
 
-import java.util.Map;
+import java.time.LocalDateTime;
+import java.util.List;
 import java.util.logging.Logger;
 
 import org.springframework.stereotype.Service;
 
 import com.insulina.notification.email.EmailSender;
+import com.insulina.notification.enums.NotificationChannelEnum;
+import com.insulina.notification.enums.NotificationStatusEnum;
+import com.insulina.notification.events.ProjectEvent;
+import com.insulina.notification.model.Notification;
+import com.insulina.notification.repository.NotificationRepository;
+
+import lombok.RequiredArgsConstructor;
 
 @Service
+@RequiredArgsConstructor
 public class NotificationService {
 
     private static final Logger LOGGER = Logger.getLogger(NotificationService.class.getName());
     private final EmailSender emailSender;
+    private final NotificationRepository notificationRepository;
 
-    public NotificationService(EmailSender emailSender) {
-        this.emailSender = emailSender;
+    public void processEvent(ProjectEvent event) {
+        List<String> sendTo = event.getSendTo();
+        String subject = event.getEventType().getSubject();
+        String body = new StringBuilder("Se le informa que el proyecto: ")
+                .append(event.getProjectName())
+                .append(" " + event.getEventType().getDescription()).toString();
+        Long projectId = event.getProjectId();
+        String projectName = event.getProjectName();
+        String fromEmail = System.getenv("SPRING_MAIL_USERNAME");
+
+        sendTo.forEach(email -> {
+            boolean sent = false;
+            NotificationStatusEnum status = NotificationStatusEnum.FAILED;
+            String errorMessage = null;
+
+            try {
+                emailSender.send(email, subject, body);
+                sent = true;
+                status =  NotificationStatusEnum.SENT;
+                LOGGER.info("Email enviado exitosamente a: " + email);
+            } catch (Exception ex) {
+                errorMessage = ex.getMessage();
+                LOGGER.severe("Error enviando email a " + email + ": " + errorMessage);
+            }
+
+            // Guardar notificación con el estado real
+            try {
+                Notification notification = createNotification(
+                        email, subject, body, fromEmail,
+                        projectId, projectName, status, errorMessage);
+                notificationRepository.save(notification);
+            } catch (Exception ex) {
+                LOGGER.severe("Error guardando notificación para " + email + ": " + ex.getMessage());
+            }
+        });
     }
 
-    public void processEvent(Map<String, Object> event) {
-        // Lógica para procesar el evento de notificación
-        LOGGER.info("Procesando evento: " + event);
-        String toEmail = (String) event.get("toEmail");
-        String subject = (String) event.get("subject");
-        String body = (String) event.get("body");
-
-        try {
-            emailSender.send(toEmail, subject, body);
-        } catch (Exception e) {
-            LOGGER.severe("Error al enviar notificación: " + e.getMessage());
-        }
+    private Notification createNotification(String toEmail, String subject, String body, String fromEmail,
+            Long projectId, String projectName, NotificationStatusEnum status, String errorMessage) {
+        return new Notification().builder()
+                .projectId(projectId)
+                .projectName(projectName)
+                .sendTo(toEmail)
+                .sendFrom(fromEmail)
+                .subject(subject)
+                .body(body)
+                .channel(NotificationChannelEnum.EMAIL)
+                .sendAt(LocalDateTime.now())
+                .status(status)
+                .errorMessage(errorMessage)
+                .build();
     }
-    
+
+    public List<Notification> getAllNotificationsLogs() {
+        return notificationRepository.findAll();
+    }
+
+    public List<Notification> getNotificationsLogsByProjectName(String projectName) {
+        return notificationRepository.findByProjectName(projectName);
+    }
+
+    public List<Notification> getNotificationsLogsBySendTo(String sendTo) {
+        return notificationRepository.findBySendTo(sendTo);
+    }
+
+    public List<Notification> getNotificationsLogsByProjectNameAndSendTo(String projectName, String sendTo) {
+        return notificationRepository.findByProjectNameAndSendTo(projectName, sendTo);
+    }
+
 }
