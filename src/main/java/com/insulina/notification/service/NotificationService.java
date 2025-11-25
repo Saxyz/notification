@@ -23,6 +23,11 @@ public class NotificationService {
     private final EmailSender emailSender;
     private final NotificationRepository notificationRepository;
 
+    public void hola(){
+
+        System.out.println("Hola");
+    }
+
     public void processEvent(ProjectEvent event) {
         List<String> sendTo = event.getSendTo();
         String subject = event.getEventType().getSubject();

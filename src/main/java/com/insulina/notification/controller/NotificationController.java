@@ -3,11 +3,7 @@ package com.insulina.notification.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.insulina.notification.model.Notification;
 import com.insulina.notification.service.NotificationService;
@@ -17,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 @RestController
 @RequestMapping("notifications/logs")
 @RequiredArgsConstructor
+@CrossOrigin(origins = "http://localhost:5173")
 public class NotificationController {
 
     @Autowired
